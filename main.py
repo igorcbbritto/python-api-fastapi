@@ -1,29 +1,32 @@
 from fastapi import FastAPI
+from datetime import datetime
 import psutil
-import datetime
 
-app = FastAPI(title="Server Monitoring API")
-
+app = FastAPI(
+    title="Python System Monitor API",
+    description="API simples para monitoramento de recursos do sistema usando FastAPI e psutil",
+    version="1.0.0"
+)
 
 @app.get("/")
-def home():
+def root():
     return {
         "message": "API de monitoramento funcionando",
-        "timestamp": str(datetime.datetime.now())
+        "timestamp": datetime.now()
     }
-
-
-@app.get("/status")
-def server_status():
-    return {
-        "cpu": psutil.cpu_percent(interval=1),
-        "ram": psutil.virtual_memory().percent,
-        "disk": psutil.disk_usage('C:\\').percent
-    }
-
 
 @app.get("/health")
-def health_check():
+def health():
     return {
-        "status": "online"
+        "status": "ok",
+        "timestamp": datetime.now()
+    }
+
+@app.get("/metrics")
+def metrics():
+    return {
+        "cpu_percent": psutil.cpu_percent(interval=1),
+        "memory_percent": psutil.virtual_memory().percent,
+        "disk_percent": psutil.disk_usage("/").percent,
+        "timestamp": datetime.now()
     }
